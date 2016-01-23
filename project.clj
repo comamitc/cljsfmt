@@ -5,8 +5,15 @@
                  [org.clojure/clojurescript "1.7.228"]
                  [rewrite-cljs "0.4.0"]]
   :jvm-opts ^:replace ["-Xmx1g" "-server"]
-  :plugins [[lein-npm "0.6.1"]]
+  :plugins [[lein-npm "0.6.1"] [lein-cljsbuild "1.1.2"]]
   :npm {:dependencies [[source-map-support "0.4.0"]]}
   :source-paths ["src" "target/classes"]
   :clean-targets ["out" "release"]
-  :target-path "target")
+  :target-path "target"
+  :cljsbuild {
+    :builds [{:id "test"
+              :source-paths ["src" "test"]
+              :notify-command ["phantomjs" "phantom/unit-test.js" "phantom/unit-test.html"]
+              :compiler { :optimizations :whitespace
+                          :pretty-print true
+                          :output-to "target/testable.js"}}]})
