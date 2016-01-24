@@ -20,6 +20,6 @@
               {:id "dev"
                 :source-paths ["src"]
                 :compiler { :optimizations :whitespace
-                            :output-to "out/cljsfmt"
+                            :output-to "out/cljsfmt.js"
                             :output-dir "out/"
                             :pretty-print true}}]})
