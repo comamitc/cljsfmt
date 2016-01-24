@@ -200,8 +200,8 @@
 
 (defn- indent-order [[key _]]
   (condp instance? key
-    Symbol  (str 0 key)
-    Pattern (str 1 key)))
+    ;Symbol  (str 0 key)
+    js/RegExp (str 1 key)))
 
 (defn- custom-indent [zloc indents]
   (if (empty? indents)
