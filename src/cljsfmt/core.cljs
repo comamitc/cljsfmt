@@ -1,11 +1,13 @@
 (ns cljsfmt.core
-  (:require [clojure.zip :as zip]
-            [rewrite-clj.parser :as p]
+  (:require [cljsfmt.indents.clojurescript :as ci]
+            [cljsfmt.indents.fuzzy :as fi]
+            [clojure.zip :as zip]
             [rewrite-clj.node :as n]
+            [rewrite-clj.parser :as p]
             [rewrite-clj.zip :as z]
             [rewrite-clj.zip.base :as zb]
-            [cljsfmt.indents.clojurescript :as ci]
-            [cljsfmt.indents.fuzzy :as fi]))
+            [rewrite-clj.zip.whitespace :as zw]
+            [rewrite-clj.zip.move :as zm]))
 
 (defn- edit-all [zloc p? f]
   (loop [zloc (if (p? zloc) (f zloc) zloc)]
@@ -18,26 +20,26 @@
 
 (defn- surrounding? [zloc p?]
   (and (p? zloc) (or (nil? (zip/left zloc))
-                     (nil? (z/skip zip/right p? zloc)))))
+                     (nil? (zw/skip zip/right p? zloc)))))
 
 (defn- top? [zloc]
   (and zloc (not= (z/node zloc) (z/root zloc))))
 
 (defn- surrounding-whitespace? [zloc]
   (and (top? (z/up zloc))
-       (surrounding? zloc z/whitespace?)))
+       (surrounding? zloc zw/whitespace?)))
 
 (defn remove-surrounding-whitespace [form]
   (transform form edit-all surrounding-whitespace? zip/remove))
 
 (defn- element? [zloc]
-  (if zloc (not (z/whitespace-or-comment? zloc))))
+  (if zloc (not (zw/whitespace-or-comment? zloc))))
 
 (defn- missing-whitespace? [zloc]
   (and (element? zloc) (element? (zip/right zloc))))
 
 (defn insert-missing-whitespace [form]
-  (transform form edit-all missing-whitespace? z/append-space))
+  (transform form edit-all missing-whitespace? zw/append-space))
 
 (defn- whitespace? [zloc]
   (= (z/tag zloc) :whitespace))
@@ -46,15 +48,15 @@
   (some-> zloc z/node n/comment?))
 
 (defn- line-break? [zloc]
-  (or (z/linebreak? zloc) (comment? zloc)))
+  (or (zw/linebreak? zloc) (comment? zloc)))
 
 (defn- skip-whitespace [zloc]
-  (z/skip zip/next whitespace? zloc))
+  (zw/skip zip/next whitespace? zloc))
 
 (defn- count-newlines [zloc]
   (loop [zloc zloc 
          newlines 0]
-    (if (z/linebreak? zloc)
+    (if (zw/linebreak? zloc)
       (recur (-> zloc zip/next skip-whitespace)
              (-> zloc z/string count (+ newlines)))
       newlines)))
@@ -63,7 +65,7 @@
   (> (count-newlines zloc) 2))
 
 (defn- remove-whitespace-and-newlines [zloc]
-  (if (z/whitespace? zloc)
+  (if (zw/whitespace? zloc)
     (recur (zip/remove zloc))
     zloc))
 
@@ -146,7 +148,7 @@
   (= (z/tag zloc) :token))
 
 (defn- token-value [zloc]
-  (if (token? zloc) (z/value zloc)))
+  (if (token? zloc) (some-> zloc zip/node n/value)))
 
 (defn- form-symbol [zloc]
   (-> zloc z/leftmost token-value remove-namespace))
@@ -171,7 +173,7 @@
   (if-let [zloc (zip/left zloc)]
     (if (whitespace? zloc)
       (recur zloc)
-      (or (z/linebreak? zloc) (comment? zloc)))
+      (or (zw/linebreak? zloc) (comment? zloc)))
     true))
 
 (defn- block-indent [zloc key idx]
