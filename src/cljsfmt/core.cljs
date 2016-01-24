@@ -3,6 +3,7 @@
             [rewrite-clj.parser :as p]
             [rewrite-clj.node :as n]
             [rewrite-clj.zip :as z]
+            [rewrite-clj.zip.base :as zb]
             [cljsfmt.indents.clojurescript :as ci]
             [cljsfmt.indents.fuzzy :as fi]))
 
@@ -13,7 +14,7 @@
       zloc)))
 
 (defn- transform [form zf & args]
-  (z/root (apply zf (z/edn form) args)))
+  (z/root (apply zf (zb/edn form) args)))
 
 (defn- surrounding? [zloc p?]
   (and (p? zloc) (or (nil? (zip/left zloc))
