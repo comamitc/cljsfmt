@@ -222,7 +222,7 @@
       (zip/insert-right zloc (whitespace width))
       zloc)))
 
-(defn indent [form indents]
+(defn reindent [form indents]
   (transform form edit-all should-indent? #(indent-line % (or indents default-indents))))
 
 (defn reformat-form [form & [{:as opts}]]
