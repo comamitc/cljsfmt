@@ -16,4 +16,10 @@
               :notify-command ["phantomjs" "phantom/unit-test.js" "phantom/unit-test.html"]
               :compiler { :optimizations :whitespace
                           :pretty-print true
-                          :output-to "target/testable.js"}}]})
+                          :output-to "target/testable.js"}}
+              {:id "dev"
+                :source-paths ["src"]
+                :compiler { :optimizations :whitespace
+                            :output-to "out/cljsfmt"
+                            :output-dir "out/"
+                            :pretty-print true}}]})

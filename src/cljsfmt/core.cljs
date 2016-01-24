@@ -2,7 +2,9 @@
   (:require [clojure.zip :as zip]
             [rewrite-clj.parser :as p]
             [rewrite-clj.node :as n]
-            [rewrite-clj.zip :as z]))
+            [rewrite-clj.zip :as z]
+            [cljsfmt.indents.clojurescript :as ci]
+            [cljsfmt.indents.fuzzy :as fi]))
 
 (defn- edit-all [zloc p? f]
   (loop [zloc (if (p? zloc) (f zloc) zloc)]
@@ -178,13 +180,9 @@
       (inner-indent zloc key 0 nil)
       (list-indent zloc))))
 
-(def read-resource
-  (comp read-string slurp))
-
 (def default-indents
-  (merge (read-resource "cljfmt/indents/clojure.clj")
-         (read-resource "cljfmt/indents/compojure.clj")
-         (read-resource "cljfmt/indents/fuzzy.clj")))
+  (merge fi/fuzzy-indents
+         ci/cljs-indents))
 
 (defmulti ^:private indenter-fn
   (fn [sym [type & args]] type))
@@ -224,11 +222,8 @@
       (zip/insert-right zloc (whitespace width))
       zloc)))
 
-(defn indent
-  ([form]
-   (indent form default-indents))
-  ([form indents]
-   (transform form edit-all should-indent? #(indent-line % indents))))
+(defn indent [form indents]
+  (transform form edit-all should-indent? #(indent-line % (or indents default-indents))))
 
 (defn reformat-form [form & [{:as opts}]]
   (-> form
@@ -245,3 +240,5 @@
   (-> (p/parse-string-all form-string)
       (reformat-form options)
       (n/string)))
+
+(reformat-string "(foo bar\nbaz\nquz)")
