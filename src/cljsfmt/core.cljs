@@ -245,5 +245,3 @@
   (-> (p/parse-string-all form-string)
       (reformat-form options)
       (n/string)))
-
-; (reformat-string "(foo bar\nbaz\nquz)")
