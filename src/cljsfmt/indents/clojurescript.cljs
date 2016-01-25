@@ -1,6 +1,6 @@
 (ns cljsfmt.indents.clojurescript)
 
-(def cljs-indents {alt!            [[:block 0]]
+(def cljs-indents "{alt!            [[:block 0]]
                    alt!!           [[:block 0]]
                    are             [[:block 2]]
                    binding         [[:block 1]]
@@ -64,4 +64,4 @@
                    with-open       [[:block 1]]
                    with-out-str    [[:block 0]]
                    with-precision  [[:block 1]]
-                   with-redefs     [[:block 1]]})
+                   with-redefs     [[:block 1]]}")

@@ -7,7 +7,8 @@
             [rewrite-clj.zip :as z]
             [rewrite-clj.zip.base :as zb]
             [rewrite-clj.zip.whitespace :as zw]
-            [rewrite-clj.zip.move :as zm]))
+            [rewrite-clj.zip.move :as zm]
+            [cljs.reader :as r]))
 
 (defn- edit-all [zloc p? f]
   (loop [zloc (if (p? zloc) (f zloc) zloc)]
@@ -184,8 +185,8 @@
       (list-indent zloc))))
 
 (def default-indents
-  (merge fi/fuzzy-indents
-         ci/cljs-indents))
+  (merge (r/read-string fi/fuzzy-indents)
+         (r/read-string ci/cljs-indents)))
 
 (defmulti ^:private indenter-fn
   (fn [sym [type & args]] type))
