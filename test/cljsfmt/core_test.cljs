@@ -167,7 +167,7 @@
 ;   (is (= (f/reformat-string "(foo)\n;bar\n;baz\n;qux\n(bang)")
 ;          "(foo)\n;bar\n;baz\n;qux\n(bang)")))
 
-; (deftest test-options
+(deftest test-options
 ;   (is (= (f/reformat-string "(foo)\n\n\n(bar)" {:remove-consecutive-blank-lines? false})
 ;          "(foo)\n\n\n(bar)"))
 ;   (is (= (f/reformat-string "(  foo  )" {:remove-surrounding-whitespace? false})
@@ -176,10 +176,10 @@
 ;          "(foo(bar))"))
 ;   (is (= (f/reformat-string "(foo\nbar)" {:indents '{foo [[:block 0]]}})
 ;          "(foo\n  bar)"))
-;   (is (= (f/reformat-string "(do\nfoo\nbar)" {:indents {}})
-;          "(do\n foo\n bar)"))
-;   (is (= (f/reformat-string "(do\nfoo\nbar)" {:indentation? false})
-;          "(do\nfoo\nbar)")))
+  (is (= (f/reformat-string "(do\nfoo\nbar)" {:indents {}})
+        "(do\n foo\n bar)"))
+  (is (= (f/reformat-string "(do\nfoo\nbar)" {:indentation? false})
+        "(do\nfoo\nbar)")))
 
  (deftest test-parsing
    (is (= (f/reformat-string ";foo") ";foo"))
