@@ -1,6 +1,7 @@
 (ns cljsfmt.core
   (:require [cljsfmt.indents.clojurescript :as ci]
             [cljsfmt.indents.fuzzy :as fi]
+            [cljsfmt.util :as u]
             [clojure.zip :as zip]
             [rewrite-clj.node :as n]
             [rewrite-clj.parser :as p]
@@ -101,9 +102,9 @@
    :var "#'", :quote "'",  :syntax-quote "`", :unquote-splicing "~@"})
 
 (defn- prior-string [zloc]
-  (if-let [p (z/left* zloc)]
+  (if-let [p (u/left zloc)]
     (str (prior-string p) (n/string (z/node p)))
-    (if-let [p (z/up* zloc)]
+    (if-let [p (u/up zloc)]
       (str (prior-string p) (start-element (n/tag (z/node p))))
       "")))
 
@@ -149,7 +150,7 @@
   (= (z/tag zloc) :token))
 
 (defn- token-value [zloc]
-  (if (token? zloc) (some-> zloc zip/node n/value)))
+  (if (token? zloc) (some-> zloc zip/node u/node-value)))
 
 (defn- form-symbol [zloc]
   (-> zloc z/leftmost token-value remove-namespace))
