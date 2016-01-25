@@ -54,7 +54,7 @@
   (zw/skip zip/next whitespace? zloc))
 
 (defn- count-newlines [zloc]
-  (loop [zloc zloc 
+  (loop [zloc zloc
          newlines 0]
     (if (zw/linebreak? zloc)
       (recur (-> zloc zip/next skip-whitespace)
@@ -141,7 +141,7 @@
 
 (defn- indent-matches? [key sym]
   (condp instance? key
-    ; Symbol  (= key sym)
+    Symbol  (= key sym)
     js/RegExp (re-find key (str sym))))
 
 (defn- token? [zloc]
@@ -201,7 +201,7 @@
 
 (defn- indent-order [[key _]]
   (condp instance? key
-    ;Symbol  (str 0 key)
+    Symbol  (str 0 key)
     js/RegExp (str 1 key)))
 
 (defn- custom-indent [zloc indents]
