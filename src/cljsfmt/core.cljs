@@ -102,7 +102,7 @@
    :var "#'", :quote "'",  :syntax-quote "`", :unquote-splicing "~@"})
 
 (defn- prior-string [zloc]
-  (if-let [p (z/left zloc)]
+  (if-let [p (u/left zloc)]
     (str (prior-string p) (n/string (z/node p)))
     (if-let [p (z/up zloc)]
       (str (prior-string p) (start-element (n/tag (z/node p))))
